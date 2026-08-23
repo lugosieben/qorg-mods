@@ -1,0 +1,44 @@
+// Shared configuration for all subprojects
+subprojects {
+	afterEvaluate {
+		apply plugin: 'maven-publish'
+
+		repositories {
+			maven {
+				name = 'Modrinth'
+				url = 'https://api.modrinth.com/maven'
+				content {
+					includeGroup 'maven.modrinth'
+				}
+			}
+		}
+
+		java {
+			withSourcesJar()
+			sourceCompatibility = JavaVersion.VERSION_25
+			targetCompatibility = JavaVersion.VERSION_25
+		}
+
+		tasks.withType(JavaCompile).configureEach {
+			it.options.release = 25
+		}
+
+		jar {
+			from(rootProject.file("LICENSE")) {
+				rename { "${it}_${project.name}" }
+			}
+		}
+
+		publishing {
+			publications {
+				create("mavenJava", MavenPublication) {
+					from components.java
+				}
+			}
+
+			repositories {
+				// Add repositories to publish to here.
+			}
+		}
+	}
+}

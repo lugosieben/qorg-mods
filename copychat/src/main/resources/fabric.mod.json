@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "copychat",
+	"version": "${version}",
+	"name": "Copy Chat",
+	"description": "Copy messages straight from chat!",
+	"authors": [
+		"Lugo_Sieben"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/copy-chat",
+		"sources": "https://github.com/lugosieben/qorg-mods",
+		"issues": "https://github.com/lugosieben/qorg-mods/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/copychat/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"main": [
+			"qorg.copychat.CopyChat"
+		]
+	},
+	"mixins": [
+		"copychat.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "${minecraft_version_compatible}",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
