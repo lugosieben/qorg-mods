@@ -15,12 +15,12 @@ subprojects {
 
 		java {
 			withSourcesJar()
-			sourceCompatibility = JavaVersion.VERSION_25
-			targetCompatibility = JavaVersion.VERSION_25
+			sourceCompatibility = JavaVersion.toVersion(project.java_version)
+			targetCompatibility = JavaVersion.toVersion(project.java_version)
 		}
 
 		tasks.withType(JavaCompile).configureEach {
-			it.options.release = 25
+			it.options.release = project.java_version as int
 		}
 
 		jar {

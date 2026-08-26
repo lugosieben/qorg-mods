@@ -24,9 +24,9 @@
 		"copychat.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.19.3",
+		"fabricloader": "${loader_compatible}",
 		"minecraft": "${minecraft_version_compatible}",
-		"java": ">=25",
-		"fabric-api": "*"
+		"java": "${java_compatible}",
+		"fabric-api": "${fabric_api_compatible}"
 	}
 }

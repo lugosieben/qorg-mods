@@ -21,8 +21,11 @@ processResources {
 	def version = project.version
 	inputs.property "version", version
 	inputs.property "minecraft_version_compatible", project.minecraft_version_compatible
+	inputs.property "loader_compatible", project.loader_compatible
+	inputs.property "java_compatible", project.java_compatible
+	inputs.property "fabric_api_compatible", project.fabric_api_compatible
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version, "minecraft_version_compatible": project.minecraft_version_compatible
+		expand "version": version, "minecraft_version_compatible": project.minecraft_version_compatible, "loader_compatible": project.loader_compatible, "java_compatible": project.java_compatible, "fabric_api_compatible": project.fabric_api_compatible
 	}
 }
