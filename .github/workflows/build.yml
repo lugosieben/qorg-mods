@@ -28,5 +28,5 @@ jobs:
         with:
           name: Artifacts
           path: |
-            copychat/build/libs/
-            qommons/build/libs/
+            mods/copychat/build/libs/
+            mods/qommons/build/libs/

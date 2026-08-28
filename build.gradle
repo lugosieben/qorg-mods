@@ -1,5 +1,9 @@
 // Shared configuration for all subprojects
 subprojects {
+	if (name == 'mods') {
+		return
+	}
+
 	afterEvaluate {
 		apply plugin: 'maven-publish'
 
