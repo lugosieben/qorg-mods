@@ -1,0 +1,15 @@
+{
+  "copychat.name": "CopyChat",
+  "copychat.config.show_copy_button": "Show Copy Button",
+  "copychat.config.show_copy_button.description": "Show a copy button when you point at a chat message.",
+  "copychat.config.click_anywhere_to_copy": "Click Anywhere to Copy",
+  "copychat.config.click_anywhere_to_copy.description": "Copy the pointed-at chat message when clicking anywhere across its row instead of only the copy button.",
+  "copychat.config.use_right_click_to_copy": "Use Right Click to Copy",
+  "copychat.config.use_right_click_to_copy.description": "Use the right mouse button instead of the left one for the copy button, avoiding conflicts with other chat controls.",
+  "copychat.config.require_shift_to_copy": "Require Shift to Copy",
+  "copychat.config.require_shift_to_copy.description": "Only copy when Shift is held while clicking the copy button, preventing accidental clipboard replacement.",
+  "copychat.config.copy_as_json": "Copy as Component JSON",
+  "copychat.config.copy_as_json.description": "Copy Minecraft's structured component JSON instead of visible plain text. This preserves text styles and click or hover data.",
+  "copychat.config.show_copy_feedback": "Show Copy Feedback",
+  "copychat.config.show_copy_feedback.description": "Replace the copy icon with a check mark or cross after a copy attempt."
+}

@@ -1,63 +1,69 @@
 package qorg.copychat.mixin;
 
-import qorg.copychat.CopyChat;
-import qorg.copychat.CopyChat.ChatGeometry;
-import qorg.copychat.CopyChat.HoverResult;
+import org.spongepowered.asm.mixin.Unique;
+import qorg.copychat.chat.ChatCopyState;
+import qorg.copychat.chat.CopyButtonHitbox;
+import qorg.copychat.chat.ChatMessageFormatter;
+import qorg.copychat.config.CopyChatConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.multiplayer.chat.GuiMessage;
 import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin {
+	@Unique
+    private static final Logger LOGGER = LoggerFactory.getLogger("copychat");
 	@Inject(method = "mouseClicked(Lnet/minecraft/client/input/MouseButtonEvent;Z)Z", at = @At("HEAD"), cancellable = true)
 	private void copychat$onMouseClicked(MouseButtonEvent event, boolean doubleClick, CallbackInfoReturnable<Boolean> cir) {
 		try {
-			if (event.button() != 0) return;
-			if (CopyChat.lastPoseInverse == null) return;
-
+			if (!CopyChatConfig.SHOW_COPY_BUTTON.get()) return;
+			int copyMouseButton = CopyChatConfig.USE_RIGHT_CLICK_TO_COPY.get() ? 1 : 0;
+			if (event.button() != copyMouseButton) return;
 			Minecraft minecraft = Minecraft.getInstance();
-			ChatComponent chat = minecraft.gui.hud.getChat();
-			ChatComponentAccessor chatAccessor = (ChatComponentAccessor) chat;
-			List<GuiMessage.Line> trimmedMessages = chatAccessor.getTrimmedMessages();
-			int chatScrollbarPos = chatAccessor.getChatScrollbarPos();
-
-			Font font = minecraft.font;
-			float scale = minecraft.options.chatScale().get().floatValue();
-			int guiHeight = minecraft.getWindow().getGuiScaledHeight();
-			float rawLineSpacing = minecraft.options.chatLineSpacing().get().floatValue();
-			ChatGeometry geo = CopyChat.computeGeometry(ChatComponent.getWidth(minecraft.options.chatWidth().get()), scale, guiHeight, rawLineSpacing);
+			if (CopyChatConfig.REQUIRE_SHIFT_TO_COPY.get() && !minecraft.hasShiftDown()) return;
+			ChatCopyState.RenderSnapshot snapshot = ChatCopyState.renderSnapshot();
+			if (snapshot == null) return;
+			CopyButtonHitbox hitbox = snapshot.copyButton();
 
 			Vector2f localMouse = new Vector2f();
-			CopyChat.lastPoseInverse.transformPosition((float) event.x(), (float) event.y(), localMouse);
+			snapshot.inversePose().transformPosition((float) event.x(), (float) event.y(), localMouse);
 
-			HoverResult hover = CopyChat.findHoveredMessage(trimmedMessages, chatScrollbarPos, chat.getLinesPerPage(), geo, localMouse);
-
-			if (hover != null && localMouse.x() >= geo.chatWidth() + 4 - font.width(CopyChat.COPY_SYMBOL) - CopyChat.COPY_BUTTON_PADDING
-					&& localMouse.x() <= geo.chatWidth() + 16 + CopyChat.COPY_BUTTON_PADDING) {
+			if (hitbox != null && hitbox.contains(localMouse.x(), localMouse.y())) {
 				try {
-					String text = hover.message().content().getString();
+					String text = ChatMessageFormatter.forClipboard(hitbox.message());
 					minecraft.keyboardHandler.setClipboard(text);
-					CopyChat.lastFeedbackMessage = hover.message();
-					CopyChat.lastFeedbackSuccess = true;
+					ChatCopyState.setCopyResult(hitbox.message(), true);
 				} catch (Exception e) {
-					CopyChat.LOGGER.error("Failed to copy chat message", e);
-					CopyChat.lastFeedbackMessage = hover.message();
-					CopyChat.lastFeedbackSuccess = false;
+					LOGGER.error("Failed to copy chat message", e);
+					ChatCopyState.setCopyResult(hitbox.message(), false);
 				}
 				cir.setReturnValue(true);
 			}
+			else if (CopyChatConfig.CLICK_ANYWHERE_TO_COPY.get()) {
+				// The render snapshot only has a hitbox for the currently hovered message.
+				// Reuse that hitbox's row bounds while allowing clicks anywhere in the row.
+				if (hitbox != null && localMouse.y() >= hitbox.top() && localMouse.y() < hitbox.bottom()
+						&& localMouse.x() >= 0 && localMouse.x() < snapshot.chatBoxRight()) {
+					try {
+						String text = ChatMessageFormatter.forClipboard(hitbox.message());
+						minecraft.keyboardHandler.setClipboard(text);
+						ChatCopyState.setCopyResult(hitbox.message(), true);
+					} catch (Exception e) {
+						LOGGER.error("Failed to copy chat message", e);
+						ChatCopyState.setCopyResult(hitbox.message(), false);
+					}
+					cir.setReturnValue(true);
+				}
+			}
 		} catch (Exception e) {
-			CopyChat.LOGGER.error("Failed to handle copy chat click", e);
+			LOGGER.error("Failed to handle copy chat click", e);
 		}
 	}
 }

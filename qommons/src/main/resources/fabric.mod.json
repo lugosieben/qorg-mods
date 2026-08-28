@@ -1,39 +1,34 @@
 {
 	"schemaVersion": 1,
-	"id": "copychat",
+	"id": "qommons",
 	"version": "${version}",
-	"name": "Copy Chat",
-	"description": "Copy messages straight from chat!",
+	"name": "Qommons",
+	"description": "Common utilities for qorg mods.",
 	"authors": [
 		"Lugo_Sieben"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/mod/copy-chat",
+		"homepage": "https://github.com/lugosieben/qorg-mods",
 		"sources": "https://github.com/lugosieben/qorg-mods",
 		"issues": "https://github.com/lugosieben/qorg-mods/issues"
 	},
 	"license": "MIT",
-	"icon": "assets/copychat/icon.png",
 	"environment": "client",
 	"entrypoints": {
-		"main": [
-			"qorg.copychat.CopyChat"
+		"client": [
+			"qorg.qommons.Qommons"
 		],
 		"modmenu": [
-			"qorg.copychat.integration.ModMenuIntegration"
+			"qorg.qommons.integration.ModMenuIntegration"
 		]
 	},
 	"suggests": {
 		"modmenu": "*"
 	},
-	"mixins": [
-		"copychat.mixins.json"
-	],
 	"depends": {
 		"fabricloader": "${loader_compatible}",
 		"minecraft": "${minecraft_version_compatible}",
 		"java": "${java_compatible}",
-		"fabric-api": "${fabric_api_compatible}",
-		"qommons": "${qommons_version}"
+		"fabric-api": "${fabric_api_compatible}"
 	}
 }

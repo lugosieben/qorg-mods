@@ -12,3 +12,4 @@ pluginManagement {
 rootProject.name = 'qorg-mods'
 
 include 'copychat'
+include 'qommons'

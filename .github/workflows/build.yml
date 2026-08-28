@@ -29,3 +29,4 @@ jobs:
           name: Artifacts
           path: |
             copychat/build/libs/
+            qommons/build/libs/
