@@ -13,6 +13,7 @@
 		"issues": "https://github.com/lugosieben/qorg-mods/issues"
 	},
 	"license": "MIT",
+	"icon": "assets/qommons/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
@@ -30,5 +31,10 @@
 		"minecraft": "${minecraft_version_compatible}",
 		"java": "${java_compatible}",
 		"fabric-api": "${fabric_api_compatible}"
+	},
+	"custom": {
+		"modmenu": {
+			"badges": ["library"]
+		}
 	}
 }
