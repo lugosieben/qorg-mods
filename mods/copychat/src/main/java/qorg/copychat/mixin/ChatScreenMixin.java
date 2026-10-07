@@ -24,7 +24,7 @@ public abstract class ChatScreenMixin {
 	private void copychat$onMouseClicked(MouseButtonEvent event, boolean doubleClick, CallbackInfoReturnable<Boolean> cir) {
 		try {
 			if (!CopyChatConfig.SHOW_COPY_BUTTON.get()) return;
-			int copyMouseButton = CopyChatConfig.USE_RIGHT_CLICK_TO_COPY.get() ? 1 : 0;
+		int copyMouseButton = CopyChatConfig.USE_RIGHT_CLICK_TO_COPY.get() ? 3 : 1;
 			if (event.button() != copyMouseButton) return;
 			Minecraft minecraft = Minecraft.getInstance();
 			if (CopyChatConfig.REQUIRE_SHIFT_TO_COPY.get() && !minecraft.hasShiftDown()) return;
@@ -47,8 +47,6 @@ public abstract class ChatScreenMixin {
 				cir.setReturnValue(true);
 			}
 			else if (CopyChatConfig.CLICK_ANYWHERE_TO_COPY.get()) {
-				// The render snapshot only has a hitbox for the currently hovered message.
-				// Reuse that hitbox's row bounds while allowing clicks anywhere in the row.
 				if (hitbox != null && localMouse.y() >= hitbox.top() && localMouse.y() < hitbox.bottom()
 						&& localMouse.x() >= 0 && localMouse.x() < snapshot.chatBoxRight()) {
 					try {
